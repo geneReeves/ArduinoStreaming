@@ -17,6 +17,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+/* 12-05-2015 GgR
+    added _FILL and _TIME classes from web page 
+*/
+
 #ifndef ARDUINO_STREAMING
 #define ARDUINO_STREAMING
 
@@ -26,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "WProgram.h"
 #endif
 
-#define STREAMING_LIBRARY_VERSION 5
+#define STREAMING_LIBRARY_VERSION 5.1
 
 // Generic template
 template<class T> 
@@ -102,4 +106,37 @@ enum _EndLineCode { endl };
 inline Print &operator <<(Print &obj, _EndLineCode arg) 
 { obj.println(); return obj; }
 
+
+// _Fill struct from web page
+//  from user Rob Tillaart
+//  Serial << _FILL('=', 20) << endl;
+
+struct _FILL
+{
+char ch;
+int len;
+_FILL(char c, int l): ch(c), len(l)
+{}
+};
+
+inline Print &operator <<(Print &obj, const _FILL &arg)
+{ for (int i=0; i< arg.len; i++) obj.write(arg.ch); return obj; }
+
+// _TIME struct from web page
+//  from user Rob Tillaart
+//  Serial << _TIME(1,2,3) << endl;
+struct _TIME
+{
+uint8_t hour;
+uint8_t minu;
+uint8_t sec;
+_TIME(uint8_t h, uint8_t m, uint8_t s): hour(h), minu(m), sec(s)
+{}
+};
+
+inline Print &operator <<(Print &obj, const _TIME &arg)
+{ obj.print(((arg.hour<10)?"0":"")); obj.print(int(arg.hour));
+obj.print(((arg.minu<10)?":0":":")); obj.print(int(arg.minu));
+obj.print(((arg.sec<10)?":0":":")); obj.print(int(arg.sec));
+return obj; } 
 #endif
